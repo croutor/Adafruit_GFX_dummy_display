@@ -1,21 +1,43 @@
+/*
+ * Copyright (c) 2019, Vincent Hervieux vincent.hervieux@gmail.com
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ * * Neither the name of the author Vincent Hervieux, nor the
+ *   names of its contributors may be used to endorse or promote products
+ *   derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE REGENTS AND CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 #include <Adafruit_GFX_dummy_display.h>
-#include <sstream>
 #include <graphics.h>
 
 Adafruit_GFX_dummy_display::Adafruit_GFX_dummy_display(uint8_t w, uint8_t h) :
 Adafruit_GFX(w, h)
 {
-   std::ostringstream legend(std::ostringstream::ate);
-   legend << "Adafruit Dummy display " << "w: " << w << " ,h: " << h;
+   char size_str[50] = {0};
+   const char* title = "Adafruit Dummy display";
+   snprintf(size_str, 50, "w: %hhu, h: %hhu", w, h);
    int gd = DETECT,gm;
-   //int left=100,top=100,right=200,bottom=200,x= 300,y=150,radius=50
    initgraph(&gd,&gm,NULL);
    rectangle(0, 0, w, h);
-   // circle(x, y, radius);
-   // bar(left + 300, top, right + 300, bottom);
-   // line(left - 10, top + 150, left + 410, top + 150);
-   // ellipse(x, y + 200, 0, 360, 100, 50);
-   outtextxy(10, h + 10, (char*)legend.str().c_str());
+   outtextxy(10, h + 10, (char*)title);
+   outtextxy(10, h + 20, (char*)size_str);
 }
 
 Adafruit_GFX_dummy_display::~Adafruit_GFX_dummy_display()
@@ -35,14 +57,6 @@ void Adafruit_GFX_dummy_display::clearDisplay(void)
 void Adafruit_GFX_dummy_display::drawPixel(int16_t x, int16_t y, uint16_t color)
 {
    circle(x, y, 0);
-}
-
-size_t Adafruit_GFX_dummy_display::write(uint8_t c)
-{
-   // uint8_t str[2] = {c, 0};
-   // outtextxy(cursor_x,  cursor_y, (char*)str);
-   // cursor_x++;
-   putchar(c);
 }
 
 void Adafruit_GFX_dummy_display::drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color)
