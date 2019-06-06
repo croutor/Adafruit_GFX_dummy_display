@@ -30,14 +30,9 @@
 Adafruit_GFX_dummy_display::Adafruit_GFX_dummy_display(uint8_t w, uint8_t h) :
 Adafruit_GFX(w, h)
 {
-   char size_str[50] = {0};
-   const char* title = "Adafruit Dummy display";
-   snprintf(size_str, 50, "w: %hhu, h: %hhu", w, h);
    int gd = DETECT,gm;
    initgraph(&gd,&gm,NULL);
-   rectangle(0, 0, w, h);
-   outtextxy(10, h + 10, (char*)title);
-   outtextxy(10, h + 20, (char*)size_str);
+   initDisplay(w, h);
 }
 
 Adafruit_GFX_dummy_display::~Adafruit_GFX_dummy_display()
@@ -52,30 +47,46 @@ void Adafruit_GFX_dummy_display::display(void)
 void Adafruit_GFX_dummy_display::clearDisplay(void)
 {
    cleardevice();
+   initDisplay(width(), height());
 }
 
 void Adafruit_GFX_dummy_display::drawPixel(int16_t x, int16_t y, uint16_t color)
 {
+   setcolor(color);
    circle(x, y, 0);
 }
 
 void Adafruit_GFX_dummy_display::drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color)
 {
+   setcolor(color);
    line(x, y, x, y+h);
 }
 
 void Adafruit_GFX_dummy_display::drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color)
 {
+   setcolor(color);
    line(x, y, x+w, y);
 }
 
 void Adafruit_GFX_dummy_display::fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)
 {
+   setcolor(color);
    bar(x, y, x+w, y+h);
 }
 
 void Adafruit_GFX_dummy_display::fillScreen(uint16_t color)
 {
+   setcolor(color);
+   // TODO
+}
 
+void Adafruit_GFX_dummy_display::initDisplay(uint8_t w, uint8_t h)
+{
+   char size_str[50] = {0};
+   const char* title = "Adafruit Dummy display";
+   snprintf(size_str, 50, "w: %hhu, h: %hhu", w, h);
+   rectangle(0, 0, w, h);
+   outtextxy(10, h + 10, (char*)title);
+   outtextxy(10, h + 20, (char*)size_str);
 }
 

@@ -29,71 +29,85 @@
 #include <cstdio>
 
 #include <Fonts/FreeSansBold12pt7b.h>
+#include <Fonts/FreeSansBold9pt7b.h>
 
-#define WIDTH 128
+/* A rectangle representing the screen area will be displayed */
 #define HEIGHT 64
+#define WIDTH 128
 
 
 Adafruit_GFX_dummy_display display(WIDTH,HEIGHT);
 
-void setFreq(uint32_t _freq, uint16_t _color) 
+void setTitle(int _title_index, uint16_t _color)
 {
-   const static int16_t FREQ_BIG_TEXT_POS_X PROGMEM = 1;
-   const static int16_t FREQ_SMALL_TEXT_POS_X PROGMEM = 34;
-   const static int16_t FREQ_TEXT_POS_Y PROGMEM = 20;
-        
-   const static uint16_t MAX_FREQ_STR_LENGTH PROGMEM = 8; /* 30000000*/
-   char str[MAX_FREQ_STR_LENGTH + 1] = {0};
-   char big_str[4] = {0};
-   snprintf(str, MAX_FREQ_STR_LENGTH + 1, "%08ld", _freq);
-   strncpy (big_str, str, 2 * sizeof(char));
-   display.setFont(&FreeSansBold12pt7b);
-   display.setCursor(FREQ_BIG_TEXT_POS_X,FREQ_TEXT_POS_Y);
-   display.setTextColor(_color);
-   display.print(big_str);
-   display.setCursor(FREQ_SMALL_TEXT_POS_X,FREQ_TEXT_POS_Y);
-   display.setFont(&FreeSansBold12pt7b);
-   display.print(str + 2 * sizeof(char));
-}
-
-void setModulation(int _modulation, uint16_t _color)
-{
-    const static int16_t MOD_TEXT_POS_X PROGMEM = 108;
-    const static int16_t MOD_TEXT_POS_Y PROGMEM = 50;
-    const static char mod_cw[] PROGMEM = "CW";
-    const static char mod_am[] PROGMEM = "AM";
-    const static char mod_fm[] PROGMEM = "FM";
-    const static char mod_usb[] PROGMEM = "USB";
-    const static char mod_lsb[] PROGMEM = "LSB";
-    const static char* const modulations[] PROGMEM = {
-        mod_cw, mod_am, mod_fm, mod_usb, mod_lsb
+    const static int16_t TITLE_POS_X PROGMEM = 15;
+    const static int16_t TITLE_POS_Y PROGMEM = 20;
+    const static int16_t INDEX_POS_X PROGMEM = 30;
+    const static int16_t INDEX_POS_Y PROGMEM = 5;
+    const static int16_t MAX_STR_LENGTH PROGMEM = 20;
+    const static char title_cibi_default_freq[] PROGMEM = "CIBI DEFAULT FREQ.";
+    const static char title_cibi_min_freq[] PROGMEM     = "CIBI FREQ. MIN.";
+    const static char title_cibi_max_freq[] PROGMEM     = "CIBI FREQ. MAX.";
+    const static char* const titles[] PROGMEM = {
+        title_cibi_default_freq,
+        title_cibi_min_freq,
+        title_cibi_max_freq
     };
+    char str[MAX_STR_LENGTH] = {0};
+    int menu_index = _title_index + 1;
+    int menu_items = sizeof(titles) / sizeof(char*);
     display.setTextSize(1);
     display.setFont();
-    display.setCursor(MOD_TEXT_POS_X,MOD_TEXT_POS_Y);
     display.setTextColor(_color);
-    display.print((char*)(modulations[_modulation]));
+    snprintf(str, MAX_STR_LENGTH + 1, "CONFIG %d/%d :", menu_index, menu_items);
+    display.setCursor(INDEX_POS_X, INDEX_POS_Y);
+    display.print(str);
+    //strcpy_P(str, (char*)pgm_read_word(&(titles[_title_index])));
+    display.setCursor(TITLE_POS_X,TITLE_POS_Y);
+    display.print((char*)titles[_title_index]);
+    display.drawFastHLine(0, 31, 128, Adafruit_GFX_dummy_display::WHITE);
+}
+
+void setValue(uint32_t _value, uint16_t _color)
+{
+    const static int16_t VALUE_POS_X PROGMEM = 15;
+    const static int16_t VALUE_POS_Y PROGMEM = 55;
+    display.setTextSize(1);
+    display.setFont(&FreeSansBold9pt7b);
+    display.setCursor(VALUE_POS_X,VALUE_POS_Y);
+    display.setTextColor(_color);
+    display.print(_value);
+}
+
+void setCursorPos(int _position, uint16_t _color)
+{
+  const static int16_t CURSOR_POS_X PROGMEM = 25;
+  const static int16_t CURSOR_POS_Y PROGMEM = 60;
+  const static int16_t CURSOR_BIG_WIDTH PROGMEM = 10;
+  const static int16_t FONT2_XADVANCE PROGMEM = 9;
+  int16_t x = CURSOR_POS_X + (7 - _position) * FONT2_XADVANCE;
+  bool draw = (-1 == _position ? false : true);
+    
+  if(draw)
+    display.drawRect(x, CURSOR_POS_Y, CURSOR_BIG_WIDTH, 2, _color);
 }
 
 void setup()
 {
-  display.drawFastHLine(0, 31, 128, Adafruit_GFX_dummy_display::WHITE);
-  display.drawFastHLine(0, 40, 128, Adafruit_GFX_dummy_display::WHITE);
 }
 
+int cursor_position = 0;
+uint32_t value = 25000000;
 void loop()
 {
-   char str[50] = {0};
-   display.setTextSize(0);
-   display.setFont();
-   display.setCursor(10,10);
-   display.setTextColor(Adafruit_GFX_dummy_display::WHITE);
-   display.print("Cibi default freq.");
-   display.setCursor(10, 30);
-   snprintf(str, 50, "%d / %d", 1, 5);
-   display.print(str);
-   setModulation(1,Adafruit_GFX_dummy_display::WHITE);
+   setTitle(1,Adafruit_GFX_dummy_display::WHITE);
+   setValue(value, Adafruit_GFX_dummy_display::WHITE);
+   setCursorPos(cursor_position, Adafruit_GFX_dummy_display::WHITE);
    display.display();
+   sleep(1);
+   display.clearDisplay();
+   value = (value + 1) % 30000000;
+   cursor_position = (cursor_position + 1) % 7;
 }
 
 int main()
@@ -101,11 +115,10 @@ int main()
    
    setup();
 
-   loop();
-   // for(int i = 0; i < 100; i++)
-   // {
-   //    loop();
-   // }
+   for(int i = 0; i < 100; i++)
+   {
+      loop();
+   }
    sleep(10);
    return 0;
 }

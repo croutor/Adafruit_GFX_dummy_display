@@ -29,6 +29,14 @@
 
 #include "Arduino.h"
 
+#define DEC 10
+#define HEX 16
+#define OCT 8
+#ifdef BIN // Prevent warnings if BIN is previously defined in "iotnx4.h" or similar
+#undef BIN
+#endif
+#define BIN 2
+
 class Print
 {
 public:
@@ -56,6 +64,19 @@ public:
     // Enable write(char) to fall through to write(uint8_t)
     inline size_t write(char c) { return write((uint8_t) c); }
     inline size_t write(int8_t c) { return write((uint8_t) c); }
+
+    size_t print(const String &);
+    size_t print(const char[]);
+    size_t print(char);
+    size_t print(unsigned char, int = DEC);
+    size_t print(int, int = DEC);
+    size_t print(unsigned int, int = DEC);
+    size_t print(long, int = DEC);
+    size_t print(unsigned long, int = DEC);
+    size_t print(double, int = 2);
+  private:
+    size_t printNumber(unsigned long, uint8_t);
+    size_t printFloat(double, uint8_t);
 };
 
 #endif

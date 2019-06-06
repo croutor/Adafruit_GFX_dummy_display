@@ -49,6 +49,7 @@ class Adafruit_GFX_dummy_display : public Adafruit_GFX
         const static uint16_t BLACK = 15;
         const static uint16_t WHITE = 15;
     private:
+        void initDisplay(uint8_t w, uint8_t h);
 
 };
 
