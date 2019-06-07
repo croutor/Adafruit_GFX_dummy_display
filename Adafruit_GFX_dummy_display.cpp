@@ -161,7 +161,10 @@ void Adafruit_GFX_dummy_display::setColor(uint16_t color)
    static const SDL_Color white  = {255, 255, 255, 255};
    static const SDL_Color black  = {  0,   0,   0, 255};
    static const SDL_Color red    = {255,   0,   0, 255};
-   static const SDL_Color orange = {255, 127, 40, 255};
+   static const SDL_Color orange = {255, 127,  40, 255};
+   static const SDL_Color yellow = {255, 255,   0, 255};
+   static const SDL_Color green  = {  0, 128,   0, 255};
+   static const SDL_Color blue   = {  0,   0, 255, 255};
    const SDL_Color *c;
    switch (color)
    {
@@ -177,7 +180,18 @@ void Adafruit_GFX_dummy_display::setColor(uint16_t color)
    case ORANGE:
       c = &orange;
       break;
+   case YELLOW:
+      c = &yellow;
+      break;
+   case GREEN:
+      c = &green;
+      break;
+   case BLUE:
+      c = &blue;
+      break;
    default:
+      fprintf(stderr, "Unhandled color %hu\n", color);
+      c = &white;
       break;
    }
    SDL_SetRenderDrawColor(renderer_, c->r, c->g, c->b, c->a);

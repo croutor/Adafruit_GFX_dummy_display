@@ -48,6 +48,9 @@ class Adafruit_GFX_dummy_display : public Adafruit_GFX
         const static uint16_t WHITE  = 1;
         const static uint16_t   RED  = 2;
         const static uint16_t ORANGE = 3;
+        const static uint16_t YELLOW = 4;
+        const static uint16_t GREEN  = 5;
+        const static uint16_t BLUE   = 6;
     private:
         void initWindowAndRendered(uint8_t w, uint8_t h);
         void setColor(uint16_t color);

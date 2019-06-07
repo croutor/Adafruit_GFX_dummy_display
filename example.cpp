@@ -36,10 +36,14 @@
 #define WIDTH 128
 /* If the display is small, this will increase it by ZOOM on the display */
 #define ZOOM 10
+/* Some monochrome display are blue when calling WHITE, this can be simulated by such a macro */
+//#define WHITE Adafruit_GFX_dummy_display::WHITE
+#define WHITE Adafruit_GFX_dummy_display::BLUE
 
-
+/* Here is the dummy display instanciation */
 Adafruit_GFX_dummy_display display(WIDTH,HEIGHT,ZOOM);
 
+/* Your code under test goes here */
 const static int16_t MAX_STR_LENGTH PROGMEM = 20;
 
 enum {
@@ -118,17 +122,25 @@ void setCursorPos(int _position, uint16_t _color)
   }
 }
 
-void setup()
-{
-}
+
+/* Your code under test should be called in those Arduino like functions: */
 
 int cursor_position = 0;
 uint32_t value = 00001000;
+void setup()
+{
+    display.setTextColor(WHITE);
+    display.print("Welcome!");
+    display.display();
+    sleep(1);
+}
+
+
 void loop()
 {
-   setTitle(value%6,Adafruit_GFX_dummy_display::WHITE);
-   setValue(value, Adafruit_GFX_dummy_display::WHITE);
-   setCursorPos(cursor_position, Adafruit_GFX_dummy_display::WHITE);
+   setTitle(value%6,WHITE);
+   setValue(value, WHITE);
+   setCursorPos(cursor_position, WHITE);
    display.display();
    usleep(150000);
    display.clearDisplay();
@@ -136,14 +148,30 @@ void loop()
    cursor_position = (cursor_position + 1) % CURSOR_POS_MAX;
 }
 
+/* This is emulating Arduino Behaviour, and should probably most of the time be only copy/pasted unless you really know what your are doing */
+
 int main()
 {
-   
-   setup(); 
-   for(int i = 0; i < 100; i++)
-   {
-      loop();
-   }
-   sleep(5);
-   return 0;
+    int running = 1;
+    /* Calling Arduino like setup() */
+    setup();
+    while(running)
+    {
+        SDL_Event event;
+        /* Calling Arduino loop() forever until user presses the quit arrow */
+        loop();
+        if ( SDL_PollEvent(&event) == 1 )
+        {
+            switch (event.type)
+            {
+                case SDL_QUIT:
+			        running = 0;
+			        break;
+		        default:
+                    /* running */
+			        break;
+            }
+        }
+    }
+    return 0;
 }
