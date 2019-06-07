@@ -34,9 +34,26 @@
 /* A rectangle representing the screen area will be displayed */
 #define HEIGHT 64
 #define WIDTH 128
+/* If the display is small, this will increase it by ZOOM on the display */
+#define ZOOM 10
 
 
-Adafruit_GFX_dummy_display display(WIDTH,HEIGHT);
+Adafruit_GFX_dummy_display display(WIDTH,HEIGHT,ZOOM);
+
+const static int16_t MAX_STR_LENGTH PROGMEM = 20;
+
+enum {
+    CURSOR_POS_DIG0 = 0,
+    CURSOR_POS_DIG1,
+    CURSOR_POS_DIG2,
+    CURSOR_POS_DIG3,
+    CURSOR_POS_DIG4,
+    CURSOR_POS_DIG5,
+    CURSOR_POS_DIG6,
+    CURSOR_POS_DIG7,
+    CURSOR_POS_ITEM,
+    CURSOR_POS_MAX
+};
 
 void setTitle(int _title_index, uint16_t _color)
 {
@@ -44,14 +61,19 @@ void setTitle(int _title_index, uint16_t _color)
     const static int16_t TITLE_POS_Y PROGMEM = 20;
     const static int16_t INDEX_POS_X PROGMEM = 30;
     const static int16_t INDEX_POS_Y PROGMEM = 5;
-    const static int16_t MAX_STR_LENGTH PROGMEM = 20;
     const static char title_cibi_default_freq[] PROGMEM = "CIBI DEFAULT FREQ.";
-    const static char title_cibi_min_freq[] PROGMEM     = "CIBI FREQ. MIN.";
-    const static char title_cibi_max_freq[] PROGMEM     = "CIBI FREQ. MAX.";
+    const static char title_cibi_min_freq[] PROGMEM     = " CIBI FREQ. MIN.";
+    const static char title_cibi_max_freq[] PROGMEM     = " CIBI FREQ. MAX.";
+    const static char title_fi_am_fm[] PROGMEM          = "    FI AM/FM";
+    const static char title_fi_usb[] PROGMEM            = "    FI USB";
+    const static char title_fi_lsb[] PROGMEM            = "    FI LSB";
     const static char* const titles[] PROGMEM = {
         title_cibi_default_freq,
         title_cibi_min_freq,
-        title_cibi_max_freq
+        title_cibi_max_freq,
+        title_fi_am_fm,
+        title_fi_usb,
+        title_fi_lsb
     };
     char str[MAX_STR_LENGTH] = {0};
     int menu_index = _title_index + 1;
@@ -65,6 +87,7 @@ void setTitle(int _title_index, uint16_t _color)
     //strcpy_P(str, (char*)pgm_read_word(&(titles[_title_index])));
     display.setCursor(TITLE_POS_X,TITLE_POS_Y);
     display.print((char*)titles[_title_index]);
+    display.drawFastHLine(0, 15, 128, Adafruit_GFX_dummy_display::WHITE);
     display.drawFastHLine(0, 31, 128, Adafruit_GFX_dummy_display::WHITE);
 }
 
@@ -72,24 +95,27 @@ void setValue(uint32_t _value, uint16_t _color)
 {
     const static int16_t VALUE_POS_X PROGMEM = 15;
     const static int16_t VALUE_POS_Y PROGMEM = 55;
+    char str[MAX_STR_LENGTH] = {0};
+    snprintf(str, MAX_STR_LENGTH + 1, "%08u", _value);
     display.setTextSize(1);
     display.setFont(&FreeSansBold9pt7b);
     display.setCursor(VALUE_POS_X,VALUE_POS_Y);
     display.setTextColor(_color);
-    display.print(_value);
+    display.print(str);
 }
 
 void setCursorPos(int _position, uint16_t _color)
 {
-  const static int16_t CURSOR_POS_X PROGMEM = 25;
-  const static int16_t CURSOR_POS_Y PROGMEM = 60;
+  const static int16_t CURSOR_POS_X PROGMEM = 15;
+  const static int16_t CURSOR_POS_Y PROGMEM = 58;
   const static int16_t CURSOR_BIG_WIDTH PROGMEM = 10;
-  const static int16_t FONT2_XADVANCE PROGMEM = 9;
-  int16_t x = CURSOR_POS_X + (7 - _position) * FONT2_XADVANCE;
-  bool draw = (-1 == _position ? false : true);
-    
-  if(draw)
-    display.drawRect(x, CURSOR_POS_Y, CURSOR_BIG_WIDTH, 2, _color);
+  const static int16_t FONT2_XADVANCE PROGMEM = 10;
+  int16_t x;
+  if(_position >= CURSOR_POS_DIG0 && _position <= CURSOR_POS_DIG7)
+  {
+      x = CURSOR_POS_X + (7 - _position) * FONT2_XADVANCE;
+      display.drawRect(x, CURSOR_POS_Y, CURSOR_BIG_WIDTH, 2, _color);
+  }
 }
 
 void setup()
@@ -97,28 +123,27 @@ void setup()
 }
 
 int cursor_position = 0;
-uint32_t value = 25000000;
+uint32_t value = 00001000;
 void loop()
 {
-   setTitle(1,Adafruit_GFX_dummy_display::WHITE);
+   setTitle(value%6,Adafruit_GFX_dummy_display::WHITE);
    setValue(value, Adafruit_GFX_dummy_display::WHITE);
    setCursorPos(cursor_position, Adafruit_GFX_dummy_display::WHITE);
    display.display();
-   sleep(1);
+   usleep(150000);
    display.clearDisplay();
    value = (value + 1) % 30000000;
-   cursor_position = (cursor_position + 1) % 7;
+   cursor_position = (cursor_position + 1) % CURSOR_POS_MAX;
 }
 
 int main()
 {
    
-   setup();
-
+   setup(); 
    for(int i = 0; i < 100; i++)
    {
       loop();
    }
-   sleep(10);
+   sleep(5);
    return 0;
 }

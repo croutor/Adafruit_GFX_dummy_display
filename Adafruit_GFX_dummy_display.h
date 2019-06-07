@@ -29,14 +29,12 @@
 
 #include "Arduino.h"
 #include "Adafruit_GFX.h"
-
-
-
+#include <SDL2/SDL.h>
 
 class Adafruit_GFX_dummy_display : public Adafruit_GFX
 {
     public:
-        Adafruit_GFX_dummy_display(uint8_t w, uint8_t h); // Constructor
+        Adafruit_GFX_dummy_display(uint8_t w, uint8_t h, uint8_t zoom = 1); // Constructor
 	    ~Adafruit_GFX_dummy_display();
 	    void display(void);
         void clearDisplay(void);
@@ -45,11 +43,17 @@ class Adafruit_GFX_dummy_display : public Adafruit_GFX
         void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
         void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
         void fillScreen(uint16_t color);
-        /* to match graphics.h */
-        const static uint16_t BLACK = 15;
-        const static uint16_t WHITE = 15;
+        /* So far a monochrome display , TODO: add colors */
+        const static uint16_t BLACK  = 0;
+        const static uint16_t WHITE  = 1;
+        const static uint16_t   RED  = 2;
+        const static uint16_t ORANGE = 3;
     private:
-        void initDisplay(uint8_t w, uint8_t h);
+        void initWindowAndRendered(uint8_t w, uint8_t h);
+        void setColor(uint16_t color);
+        SDL_Window *window_;
+        SDL_Renderer *renderer_;
+        uint8_t zoom_ratio_;
 
 };
 

@@ -1,7 +1,9 @@
 EXEC=dummy-display-example
 CC=g++
-CFLAGS=-W -Wall -std=c++11 -ansi -pedantic -I./ -I./Adafruit-GFX-Library
-LDFLAGS=-lgraph
+SDL_CFLAGS=$(shell sdl2-config --cflags)
+SDL_LDFLAGS=$(shell sdl2-config --libs)
+CFLAGS=-W -Wall -std=c++11 -ansi -pedantic -I./ -I./Adafruit-GFX-Library $(SDL_CFLAGS)
+LDFLAGS=$(SDL_LDFLAGS)
 SRC= $(wildcard *.cpp ./Adafruit-GFX-Library/Adafruit_GFX.cpp)
 OBJ= $(SRC:.cpp=.o)
 
