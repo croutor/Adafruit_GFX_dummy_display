@@ -6,6 +6,11 @@ Under Debian it is installed using the following command
 sudo apt install libsdl2-dev
 ```
 
+On macOS with [homebrew](https://brew.sh), use:
+```
+brew install sdl2
+```
+
 HOW TO :
 
 * Clone this project
@@ -26,7 +31,7 @@ You should see something like this:
 
 ![Preview](img/preview.png)
 
-* Stop the program using Alt+F4
+* Stop the program using Alt+F4 (Cmd-Q on macOS)
 
 
 
