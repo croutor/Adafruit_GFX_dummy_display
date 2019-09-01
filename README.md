@@ -13,9 +13,6 @@ HOW TO :
 git clone --recursive https://github.com/croutor/Adafruit_GFX_dummy_display.git
 ```
 
-* Patch Adafruit-GFX-Library/Adafruit_GFX.h to add on line 3:
-#define ARDUINO 123
-
 * Compile the dummy display example:
 ```
 make
