@@ -8,15 +8,9 @@ sudo apt install libsdl2-dev
 
 HOW TO :
 
-* First clone this project
+* Clone this project
 ```
-git clone https://github.com/croutor/Adafruit_GFX_dummy_display.git
-```
-
-* Then clone Adafruit_FFX project within this project's directory:
-```
-cd Adafruit_GFX_dummy_display
-git clone https://github.com/adafruit/Adafruit-GFX-Library.git
+git clone --recursive https://github.com/croutor/Adafruit_GFX_dummy_display.git
 ```
 
 * Patch Adafruit-GFX-Library/Adafruit_GFX.h to add on line 3:
