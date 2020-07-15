@@ -1,3 +1,5 @@
 Adafruit-GFX-Library/*
+Adafruit-GFX-Library
 .vscode
-
+*.o
+dummy-display-example
