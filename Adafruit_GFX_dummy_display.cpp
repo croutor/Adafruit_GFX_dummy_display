@@ -126,7 +126,7 @@ void Adafruit_GFX_dummy_display::fillScreen(uint16_t color)
    setColor(color);
 }
 
-void Adafruit_GFX_dummy_display::initWindowAndRendered(uint8_t w, uint8_t h)
+void Adafruit_GFX_dummy_display::initWindowAndRendered(int16_t w, int16_t h)
 {
    /* Init window and, création de la fenêtre et du renderer. */
    if(0 != SDL_Init(SDL_INIT_VIDEO))
