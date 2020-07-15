@@ -26,7 +26,7 @@
  */
 #include <Adafruit_GFX_dummy_display.h>
 
-Adafruit_GFX_dummy_display::Adafruit_GFX_dummy_display(uint8_t w, uint8_t h, uint8_t zoom) :
+Adafruit_GFX_dummy_display::Adafruit_GFX_dummy_display(int16_t w, int16_t h, uint8_t zoom) :
 Adafruit_GFX(w, h),
 window_(NULL),
 renderer_(NULL),

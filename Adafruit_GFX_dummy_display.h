@@ -34,7 +34,7 @@
 class Adafruit_GFX_dummy_display : public Adafruit_GFX
 {
     public:
-        Adafruit_GFX_dummy_display(uint8_t w, uint8_t h, uint8_t zoom = 1); // Constructor
+        Adafruit_GFX_dummy_display(int16_t w, int16_t h, uint8_t zoom = 1); // Constructor
 	    ~Adafruit_GFX_dummy_display();
 	    void display(void);
         void clearDisplay(void);
