@@ -34,9 +34,11 @@
 #include <string>
 
 #define ARDUINO 123
+/* disable some Arduino specific memory access MACROS */
 #define PROGMEM
+#define F(X) X
 
-
+/* Define some Arduino specific types */
 typedef bool boolean;
 typedef std::string String;
 typedef std::string __FlashStringHelper;
