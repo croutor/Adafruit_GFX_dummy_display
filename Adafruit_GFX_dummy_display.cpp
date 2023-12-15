@@ -57,6 +57,26 @@ void Adafruit_GFX_dummy_display::clearDisplay(void)
 
 void Adafruit_GFX_dummy_display::drawPixel(int16_t x, int16_t y, uint16_t color)
 {
+    // Copied display rotation from Adafruit GFX
+    // Set Rotation via setRotation, as usual.
+    int16_t t;
+    switch(rotation) {
+        case 1:
+            t = x;
+            x = WIDTH  - 1 - y;
+            y = t;
+            break;
+        case 2:
+            x = WIDTH  - 1 - x;
+            y = HEIGHT - 1 - y;
+            break;
+        case 3:
+            t = x;
+            x = y;
+            y = HEIGHT - 1 - t;
+            break;
+    }
+
    setColor(color);
    if(zoom_ratio_ == 1)
    {
